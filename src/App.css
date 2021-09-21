@@ -208,7 +208,10 @@ body {
   background-color: linen;
   color:black;
 }
-
+.top5-item{
+  float: right;
+  height: 20%;
+}
 input {
   font-size:20pt;
 }
