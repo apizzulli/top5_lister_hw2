@@ -111,7 +111,7 @@ class App extends React.Component {
             currentList: newCurrentList,
             sessionData: prevState.sessionData
         }), () => {
-
+        console.log(newCurrentList.items[0]);
             // ANY AFTER EFFECTS?
         });
     }
