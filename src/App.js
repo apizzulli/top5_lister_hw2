@@ -111,9 +111,14 @@ class App extends React.Component {
             currentList: newCurrentList,
             sessionData: prevState.sessionData
         }), () => {
-        console.log(newCurrentList.items[0]);
             // ANY AFTER EFFECTS?
         });
+    }
+    renameListItem = (key) =>{
+        if(this.currentList!=null){
+            let currentItem = this.currentList.items[key];
+            console.log(key);
+        }
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
@@ -160,10 +165,12 @@ class App extends React.Component {
                     renameListCallback={this.renameList}
                 />
                 <Workspace
-                    
-                    currentList={this.state.currentList} />
+                    currentList={this.state.currentList} 
+                    renameListItemCallback={this.renameListItem}
+                />
                 <Statusbar 
-                    currentList={this.state.currentList} />
+                    currentList={this.state.currentList} 
+                />
                 <DeleteModal
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                 />

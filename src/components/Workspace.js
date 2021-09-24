@@ -1,5 +1,5 @@
 import React from "react";
-
+import ListItem from "./ListItem";
 export default class Workspace extends React.Component {
     render() {
         const {currentList} = this.props;
@@ -26,11 +26,26 @@ export default class Workspace extends React.Component {
                         <div className="item-number">5.</div>
                     </div>
                     <div id="edit-items">
-                        <div className = "top5-item" id="item-1">{item0}</div>
-                        <div className = "top5-item" id="item-2">{item1}</div>
-                        <div className = "top5-item" id="item-3">{item2}</div>
-                        <div className = "top5-item" id="item-4">{item3}</div>
-                        <div className = "top5-item" id="item-5">{item4}</div>
+                        <ListItem
+                            item={item0}
+                            num={0}
+                        />
+                        <ListItem
+                            item={item1}
+                            num={1}
+                        />
+                        <ListItem
+                            item={item2}
+                            num={2}
+                        />
+                        <ListItem
+                            item = {item3}
+                            num={3}
+                        />
+                        <ListItem
+                            item={item4}
+                            num={4}
+                        /> 
                     </div>
                 </div>
             </div>
