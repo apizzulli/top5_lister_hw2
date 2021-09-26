@@ -199,6 +199,12 @@ body {
   font-size: 24pt;
   height:20%;
 }
+.top5-item-dragOver{
+  font-size: 24pt;
+  position:relative;
+  height:20%;
+  background-color: green;
+}
 
 .item-number {
   justify-content: center;

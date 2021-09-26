@@ -5,12 +5,11 @@ import './App.css';
 import DBManager from './db/DBManager';
 
 // THESE ARE OUR REACT COMPONENTS
-import DeleteModal from './components/DeleteModal';
+import DeleteModal from './components/DeleteModal.js';
 import Banner from './components/Banner.js'
 import Sidebar from './components/Sidebar.js'
 import Workspace from './components/Workspace.js';
 import Statusbar from './components/Statusbar.js'
-
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -24,7 +23,8 @@ class App extends React.Component {
         // SETUP THE INITIAL STATE
         this.state = {
             currentList : null,
-            sessionData : loadedSessionData
+            sessionData : loadedSessionData,
+            toBeDeleted: null
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -114,11 +114,17 @@ class App extends React.Component {
             // ANY AFTER EFFECTS?
         });
     }
-    renameListItem = (key) =>{
-        if(this.currentList!=null){
-            let currentItem = this.currentList.items[key];
-            console.log(key);
-        }
+    renameItem = (id,text) =>{
+        let newList=this.state.currentList;
+        newList.items[id]= text;
+        //newList is the new list that is to become the currentList
+
+        this.setState(prevState=> ({
+            currentList: newList,
+            sessionData: prevState.sessionData
+        }), () => {
+            this.db.mutationUpdateList(newList);
+        });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
@@ -131,11 +137,14 @@ class App extends React.Component {
             // ANY AFTER EFFECTS?
         });
     }
-    deleteList = () => {
+    deleteList = (key) => {
         // SOMEHOW YOU ARE GOING TO HAVE TO FIGURE OUT
         // WHICH LIST IT IS THAT THE USER WANTS TO
         // DELETE AND MAKE THAT CONNECTION SO THAT THE
         // NAME PROPERLY DISPLAYS INSIDE THE MODAL
+        this.setState({
+            toBeDeleted: key,
+        })
         this.showDeleteListModal();
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
@@ -145,7 +154,7 @@ class App extends React.Component {
         modal.classList.add("is-visible");
     }
     // THIS FUNCTION IS FOR HIDING THE MODAL
-    hideDeleteListModal() {
+    hideDeleteListModal(key) {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
     }
@@ -166,13 +175,14 @@ class App extends React.Component {
                 />
                 <Workspace
                     currentList={this.state.currentList} 
-                    renameListItemCallback={this.renameListItem}
+                    renameItemCallback={this.renameItem}
                 />
                 <Statusbar 
                     currentList={this.state.currentList} 
                 />
                 <DeleteModal
                     hideDeleteListModalCallback={this.hideDeleteListModal}
+                    listKeyPair={this.state.toBeDeleted}
                 />
             </div>
         );

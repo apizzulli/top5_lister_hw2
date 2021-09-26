@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 
 export default class DeleteModal extends Component {
+    constructor(props){
+        super(props);
+    }
     render() {
         const { listKeyPair, hideDeleteListModalCallback } = this.props;
         let name = "";
@@ -14,7 +17,7 @@ export default class DeleteModal extends Component {
                 data-animation="slideInOutLeft">
                 <div className="modal-dialog">
                     <header className="dialog-header">
-                        Delete the {name} Top 5 List?
+                        Delete the Top 5 {name} List?
                     </header>
                     <div id="confirm-cancel-container">
                         <button

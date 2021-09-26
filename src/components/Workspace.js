@@ -2,7 +2,8 @@ import React from "react";
 import ListItem from "./ListItem";
 export default class Workspace extends React.Component {
     render() {
-        const {currentList} = this.props;
+        const { currentList,
+                renameItemCallback} = this.props;
         let item0="";
         let item1="";
         let item2="";
@@ -29,22 +30,27 @@ export default class Workspace extends React.Component {
                         <ListItem
                             item={item0}
                             num={0}
+                            renameItemCallback={renameItemCallback}
                         />
                         <ListItem
                             item={item1}
                             num={1}
+                            renameItemCallback={renameItemCallback}
                         />
                         <ListItem
                             item={item2}
                             num={2}
+                            renameItemCallback={renameItemCallback}
                         />
                         <ListItem
                             item = {item3}
                             num={3}
+                            renameItemCallback={renameItemCallback}
                         />
                         <ListItem
                             item={item4}
                             num={4}
+                            renameItemCallback={renameItemCallback}
                         /> 
                     </div>
                 </div>

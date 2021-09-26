@@ -5,7 +5,6 @@ export default class ListCard extends React.Component {
         super(props);
 
         this.state = {
-            text: this.props.keyNamePair.name,
             editActive: false,
         }
     }
