@@ -7,26 +7,22 @@ export default class ListItem extends React.Component{
         super(props);
         this.state={
             editActivated: false,
-            beingDragged: false,
             draggedOver: false,
         }
-        
     }
+
     handleClick = (event) =>{
         if(event.detail==2){
             this.toggleEdit();
         }
     }
+
     toggleEdit = () =>{
         this.setState({
             editActivated: !this.state.editActivated,
         });
     }
-    toggleDrag=()=>{//an element is being dragged, so toggle being dragged property
-        this.setState({
-            beingDragged: !this.state.beingDragged,
-        })
-    }
+
     toggleDraggedOver=()=>{
         this.setState({
             draggedOver: !this.state.draggedOver,
@@ -38,24 +34,27 @@ export default class ListItem extends React.Component{
             this.handleBlur();
         }
     }
+
     handleUpdate= (event)=>{
         this.setState({text:event.target.value});
     }
+
     handleBlur=()=>{
         let text = this.state.text;
         this.props.renameItemCallback(this.props.num,text);
         this.toggleEdit();
     }
-    handleDrag=(item)=>{
-        item.preventDefault();
-        this.toggleDrag();
-        draggedItem = item;
+
+    handleOnDrag=(event,id)=>{
+        event.preventDefault();
+        this.toggleDraggedOver();
     }
-    
+
     handleDragOver=(event)=>{
         event.preventDefault();
         this.toggleDraggedOver();
     }
+    
     
     render(){
         const {item, num}=this.props;
@@ -69,6 +68,8 @@ export default class ListItem extends React.Component{
                     onBlur={this.handleBlur}
                     onKeyPress={this.handleKeyPress}
                     onChange={this.handleUpdate}
+                    onDrag={this.handleDragOver}
+                    onDragLeave={this.handleDragOver}
                     defaultValue={item}
                 />
             )
@@ -80,9 +81,7 @@ export default class ListItem extends React.Component{
                         className={'top5-item'}
                         id={'item-'+num}
                         onClick={this.handleClick}
-                        onDrag={this.handleDrag}
                         onDragOver={this.handleDragOver}
-                        onDragEnd={this.handleDragEnd}
                         draggable='true'
                         >
                         {item}
@@ -95,8 +94,7 @@ export default class ListItem extends React.Component{
                         className={'top5-item-dragOver'}
                         id={'item-'+num}
                         onClick={this.handleClick}
-                        onDrag={this.handleDrag}
-                        onDragOver={this.handleDragOver}
+                        onDragLeave={this.handleDragOver}
                         draggable='true'
                         >
                         {item}
