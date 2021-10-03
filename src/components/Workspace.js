@@ -1,14 +1,56 @@
 import React from "react";
 import ListItem from "./ListItem";
+let item0="", item1="", item2="", item3="", item4="";
 export default class Workspace extends React.Component {
+    updateListHandler = (newList) =>{
+        this.props.updateList(newList);
+    }
+    dropItemCallback = (dragIndex,dropIndex)=>{       
+        let j =dragIndex;
+        //If attempting to drop the element onto itself, nothing changes.
+        let list = this.props.currentList;
+        if(dropIndex!=dragIndex){
+            while(j>0){//Slide all the items below the item that has been dragged down, since there is now an open spot
+                // let newItem = "item" + j;
+                // let oldItem = "item" + j-1;
+                list.items[j]=list.items[j-1];
+                j--;
+            }
+            if((dropIndex==4)){//CASE 1: the 1st item is dropped onto the last       
+                let temp = list.items[4];
+                list.items[4]= list.items[0];
+                list.items[0] = temp;                  
+            }
+            // else if((dropIndex==0)){//CASE 2: the 5th item is dropped onto the 1st
+            //     thisModel.currentList.setItemAt(dropIndex,dragInner);
+            //     item.innerHTML=dragInner;
+            // }
+            else{
+                let j = 4;
+                let lastItem = list.items[4];
+                if(dragIndex!=0)
+                    list.items[dragIndex]=list.items[dragIndex-1];
+                else
+                    list.items[dragIndex]=lastItem;
+                while(j>dropIndex){
+                    list.items[j] = list.items[j-1];
+                    j--;
+                }
+                j = dropIndex-1;
+                while(j>1){
+                    list.items[j]=list.items[j-1];
+                    j--; 
+                }
+            //     thisModel.currentList.setItemAt(0,lastItemHTML);
+            //     thisModel.currentList.setItemAt(dropIndex,dragInner);
+            //     item.innerHTML = dragInner;
+            }
+            this.updateListHandler(list);
+        }
+    }
     render() {
         const { currentList,
                 renameItemCallback} = this.props;
-        let item0="";
-        let item1="";
-        let item2="";
-        let item3="";
-        let item4="";
         if(currentList){
             item0=currentList.items[0];
             item1=currentList.items[1];
@@ -31,26 +73,31 @@ export default class Workspace extends React.Component {
                             item={item0}
                             num={0}
                             renameItemCallback={renameItemCallback}
+                            dropItemCallback={this.dropItemCallback}
                         />
                         <ListItem
                             item={item1}
                             num={1}
                             renameItemCallback={renameItemCallback}
+                            dropItemCallback={this.dropItemCallback}
                         />
                         <ListItem
                             item={item2}
                             num={2}
                             renameItemCallback={renameItemCallback}
+                            dropItemCallback={this.dropItemCallback}
                         />
                         <ListItem
                             item = {item3}
                             num={3}
                             renameItemCallback={renameItemCallback}
+                            dropItemCallback={this.dropItemCallback}
                         />
                         <ListItem
                             item={item4}
                             num={4}
                             renameItemCallback={renameItemCallback}
+                            dropItemCallback={this.dropItemCallback}
                         /> 
                     </div>
                 </div>

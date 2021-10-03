@@ -114,6 +114,14 @@ class App extends React.Component {
             // ANY AFTER EFFECTS?
         });
     }
+    updateList = (newList)=>{
+        this.setState(prevState=> ({
+            currentList: newList,
+            sessionData: prevState.sessionData
+        }), () => {
+            this.db.mutationUpdateList(newList);
+        });
+    }
     renameItem = (id,text) =>{
         let newList=this.state.currentList;
         newList.items[id]= text;
@@ -176,6 +184,7 @@ class App extends React.Component {
                 <Workspace
                     currentList={this.state.currentList} 
                     renameItemCallback={this.renameItem}
+                    updateList={this.updateList}
                 />
                 <Statusbar 
                     currentList={this.state.currentList} 

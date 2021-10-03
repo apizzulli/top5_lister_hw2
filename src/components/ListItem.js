@@ -54,54 +54,52 @@ export default class ListItem extends React.Component{
         event.preventDefault();
         this.toggleDraggedOver();
     }
-    
+    handleDrag=(event)=>{
+        draggedItem=event.target.id;
+    }
+
+    handleDrop=(event)=>{
+        droppedItem=event.target.id;
+        let n1 = parseInt(draggedItem.substring(draggedItem.length-1));
+        let n2 = parseInt(droppedItem.substring(droppedItem.length-1));
+        this.props.dropItemCallback(n1,n2);
+    }
     
     render(){
+        let cname;
+        if(!this.state.draggedOver)
+            cname="top5-item";
+        else
+            cname="top5-item-dragOver";
         const {item, num}=this.props;
-
         if(this.state.editActivated){
             return(
                 <input
                     id={'item-'+num}
-                    className={'top5-item'}
-                    type='text'
+                    className={cname}
                     onBlur={this.handleBlur}
                     onKeyPress={this.handleKeyPress}
                     onChange={this.handleUpdate}
-                    onDrag={this.handleDragOver}
-                    onDragLeave={this.handleDragOver}
                     defaultValue={item}
                 />
             )
         }
         else{
-            if(!this.state.draggedOver){
-                return(
-                    <div 
-                        className={'top5-item'}
-                        id={'item-'+num}
-                        onClick={this.handleClick}
-                        onDragOver={this.handleDragOver}
-                        draggable='true'
-                        >
-                        {item}
-                    </div>
-                )
-            }
-            else{
-                return(
-                    <div 
-                        className={'top5-item-dragOver'}
-                        id={'item-'+num}
-                        onClick={this.handleClick}
-                        onDragLeave={this.handleDragOver}
-                        draggable='true'
-                        >
-                        {item}
-                    </div>
-                )
-            }
-            
+            return(
+                <div 
+                    id={'item-'+num}                    
+                    className={cname}
+                    onClick={this.handleClick}
+                    onDrag={this.handleDrag}
+                    onDragEnter={this.toggleDraggedOver}
+                    onDragOver={this.handleDragOver}
+                    onDragLeave={this.handleDragOver}
+                    draggable='true'
+                    onDrop={this.handleDrop}
+                    >
+                    {item}
+                </div>
+            )
         }
     }
 }
