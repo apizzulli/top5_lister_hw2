@@ -24,7 +24,8 @@ class App extends React.Component {
         this.state = {
             currentList : null,
             sessionData : loadedSessionData,
-            toBeDeleted: null
+            toBeDeleted: null,
+            deleteConfirmed: false
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -136,24 +137,42 @@ class App extends React.Component {
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
-        this.setState(prevState => ({
-            currentList: null,
-            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
-            sessionData: this.state.sessionData
-        }), () => {
-            
-            // ANY AFTER EFFECTS?
-        });
+        this.setState({
+            currentList:null,
+        })
     }
+    
     deleteList = (key) => {
-        // SOMEHOW YOU ARE GOING TO HAVE TO FIGURE OUT
-        // WHICH LIST IT IS THAT THE USER WANTS TO
-        // DELETE AND MAKE THAT CONNECTION SO THAT THE
-        // NAME PROPERLY DISPLAYS INSIDE THE MODAL
         this.setState({
             toBeDeleted: key,
         })
         this.showDeleteListModal();
+    }
+    deleteConfirmed=()=>{
+        let keyNamePair = [...this.state.sessionData.keyNamePairs];
+        for (let i = 0; i < keyNamePair.length; i++) {
+            let pair = keyNamePair[i];
+            if (pair.key === this.state.toBeDeleted.key) {
+                //console.log(pair.name);
+                keyNamePair.splice(this.state.toBeDeleted.key,1);//remove the given array from the keyname pairs
+            }
+        }
+        this.sortKeyNamePairsByName(keyNamePair);
+        let newCount = this.state.sessionData.counter-1;
+        this.setState(prevState => ({
+            currentList: null,
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: newCount,
+                keyNamePairs: keyNamePair
+            }
+        }), () => {
+            // AN AFTER EFFECT IS THAT WE NEED TO MAKE SURE
+            // THE TRANSACTION STACK IS CLEARED
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+            this.closeCurrentList();
+            this.hideDeleteListModal();
+        });
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
@@ -192,6 +211,7 @@ class App extends React.Component {
                 <DeleteModal
                     hideDeleteListModalCallback={this.hideDeleteListModal}
                     listKeyPair={this.state.toBeDeleted}
+                    deleteConfirmedCallback={this.deleteConfirmed}
                 />
             </div>
         );

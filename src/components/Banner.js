@@ -9,10 +9,7 @@ export default class Banner extends React.Component {
     render() {
         const {title, 
             closeCallback} = this.props;
-        if(closeCallback)
-            console.log("CallBack");
-        else
-            console.log("ERROR")
+        
         return (
             <div id="top5-banner">
                 {title}

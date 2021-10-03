@@ -77,30 +77,35 @@ export default class Workspace extends React.Component {
                             num={0}
                             renameItemCallback={renameItemCallback}
                             dropItemCallback={this.dropItemCallback}
+                            currentList={currentList}
                         />
                         <ListItem
                             item={item1}
                             num={1}
                             renameItemCallback={renameItemCallback}
                             dropItemCallback={this.dropItemCallback}
+                            currentList={currentList}
                         />
                         <ListItem
                             item={item2}
                             num={2}
                             renameItemCallback={renameItemCallback}
                             dropItemCallback={this.dropItemCallback}
+                            currentList={currentList}
                         />
                         <ListItem
                             item = {item3}
                             num={3}
                             renameItemCallback={renameItemCallback}
                             dropItemCallback={this.dropItemCallback}
+                            currentList={currentList}
                         />
                         <ListItem
                             item={item4}
                             num={4}
                             renameItemCallback={renameItemCallback}
                             dropItemCallback={this.dropItemCallback}
+                            currentList={currentList}
                         /> 
                     </div>
                 </div>

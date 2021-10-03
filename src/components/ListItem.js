@@ -70,35 +70,45 @@ export default class ListItem extends React.Component{
             cname="top5-item";
         else
             cname="top5-item-dragOver";
-        const {item, num}=this.props;
-        if(this.state.editActivated){
-            return(
-                <input
-                    id={'item-'+num}
-                    className={cname}
-                    onBlur={this.handleBlur}
-                    onKeyPress={this.handleKeyPress}
-                    onChange={this.handleUpdate}
-                    defaultValue={item}
-                />
-            )
+        const {item, num, currentList}=this.props;
+        if(currentList){
+            if(this.state.editActivated){
+                return(
+                    <input
+                        id={'item-'+num}
+                        className={cname}
+                        onBlur={this.handleBlur}
+                        onKeyPress={this.handleKeyPress}
+                        onChange={this.handleUpdate}
+                        defaultValue={item}
+                    />
+                )
+            }
+            else{
+                return(
+                    <div 
+                        id={'item-'+num}                    
+                        className={cname}
+                        onClick={this.handleClick}
+                        onDrag={this.handleDrag}
+                        onDragOver={this.handleDragOver}
+                        onDragEnter={this.toggleDraggedOver}
+                        onDragLeave={this.toggleDraggedOver}
+                        draggable='true'
+                        onDrop={this.handleDrop}
+                        >
+                        {item}
+                    </div>
+                )
+            }
         }
-        else{
+        else
             return(
-                <div 
-                    id={'item-'+num}                    
-                    className={cname}
-                    onClick={this.handleClick}
-                    onDrag={this.handleDrag}
-                    onDragOver={this.handleDragOver}
-                    onDragEnter={this.toggleDraggedOver}
-                    onDragLeave={this.toggleDraggedOver}
-                    draggable='true'
-                    onDrop={this.handleDrop}
-                    >
-                    {item}
+                <div
+                id={'item-'+num}
+                className={"top5-item"}
+                >
                 </div>
             )
-        }
     }
 }
