@@ -1,49 +1,52 @@
 import React from "react";
 import ListItem from "./ListItem";
 let item0="", item1="", item2="", item3="", item4="";
+
 export default class Workspace extends React.Component {
     updateListHandler = (newList) =>{
         this.props.updateList(newList);
     }
+    swap=(first,last)=>{
+        let temp = last;
+        last=first;
+        first=temp;
+    }
     dropItemCallback = (dragIndex,dropIndex)=>{       
         let j =dragIndex;
+        let dragged, dropped;
         //If attempting to drop the element onto itself, nothing changes.
         let list = this.props.currentList;
         if(dropIndex!=dragIndex){
-            while(j>0){//Slide all the items below the item that has been dragged down, since there is now an open spot
-                // let newItem = "item" + j;
-                // let oldItem = "item" + j-1;
-                list.items[j]=list.items[j-1];
-                j--;
+            dropped=list.items[dropIndex];
+            dragged=list.items[dragIndex];
+            if((dragIndex==0)&&(dropIndex==4)){//CASE 1: the 1st item is dropped onto the last       
+                this.swap(dragged,dropped);            
             }
-            if((dropIndex==4)){//CASE 1: the 1st item is dropped onto the last       
-                let temp = list.items[4];
-                list.items[4]= list.items[0];
-                list.items[0] = temp;                  
-            }
-            // else if((dropIndex==0)){//CASE 2: the 5th item is dropped onto the 1st
-            //     thisModel.currentList.setItemAt(dropIndex,dragInner);
-            //     item.innerHTML=dragInner;
-            // }
-            else{
-                let j = 4;
-                let lastItem = list.items[4];
-                if(dragIndex!=0)
-                    list.items[dragIndex]=list.items[dragIndex-1];
-                else
-                    list.items[dragIndex]=lastItem;
-                while(j>dropIndex){
+            if(dropIndex==4){//the item is being dropped onto the last, but it was not dragged from the first
+                //backup the items being moved
+                j=dragIndex;
+                while(j>0){
                     list.items[j] = list.items[j-1];
                     j--;
                 }
-                j = dropIndex-1;
-                while(j>1){
+                list.items[0]=list.items[4];
+                list.items[dropIndex]=dragged;
+            }
+            else if(dropIndex!=4&& dropIndex!=0){
+                list.items[0]=list.items[4];
+                j = 4;
+                while(j>dropIndex){
                     list.items[j]=list.items[j-1];
-                    j--; 
+                    j--;
                 }
-            //     thisModel.currentList.setItemAt(0,lastItemHTML);
-            //     thisModel.currentList.setItemAt(dropIndex,dragInner);
-            //     item.innerHTML = dragInner;
+                list.items[dropIndex]=dragged;
+            }
+            else{//CASE 2: the last item is dropped onto the 1st
+                while(j>dropIndex){//Slide all the items below the item that has been dragged down, since there is now an open spot
+                    list.items[j]=list.items[j-1];
+                    j--;
+                }
+                list.items[dropIndex]=dragged;
             }
             this.updateListHandler(list);
         }

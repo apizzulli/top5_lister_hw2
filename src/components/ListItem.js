@@ -52,7 +52,6 @@ export default class ListItem extends React.Component{
 
     handleDragOver=(event)=>{
         event.preventDefault();
-        this.toggleDraggedOver();
     }
     handleDrag=(event)=>{
         draggedItem=event.target.id;
@@ -91,9 +90,9 @@ export default class ListItem extends React.Component{
                     className={cname}
                     onClick={this.handleClick}
                     onDrag={this.handleDrag}
-                    onDragEnter={this.toggleDraggedOver}
                     onDragOver={this.handleDragOver}
-                    onDragLeave={this.handleDragOver}
+                    onDragEnter={this.toggleDraggedOver}
+                    onDragLeave={this.toggleDraggedOver}
                     draggable='true'
                     onDrop={this.handleDrop}
                     >
