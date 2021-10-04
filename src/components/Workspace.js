@@ -11,7 +11,8 @@ export default class Workspace extends React.Component {
         last=first;
         first=temp;
     }
-    dropItemCallback = (dragIndex,dropIndex)=>{       
+    dropItemCallback = (dragIndex,dropIndex)=>{      
+        this.props.enableButtonCallback('undo-button');
         let j =dragIndex;
         let dragged, dropped;
         //If attempting to drop the element onto itself, nothing changes.
@@ -53,7 +54,8 @@ export default class Workspace extends React.Component {
     }
     render() {
         const { currentList,
-                renameItemCallback} = this.props;
+                renameItemCallback,
+                enableButtonCallback} = this.props;
         if(currentList){
             item0=currentList.items[0];
             item1=currentList.items[1];

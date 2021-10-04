@@ -152,7 +152,6 @@ body {
   left:0%;
   top:20%;
   height:60%;
-  background-color: var(--swatch-primary);
   display:flex
 }
 
@@ -162,6 +161,8 @@ body {
   float:left;
   color: black;
   cursor: pointer;
+  background-color: transparent;
+  line-height: 50px;
 }
 
 

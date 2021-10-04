@@ -37,40 +37,44 @@ class App extends React.Component {
     // THIS FUNCTION BEGINS THE PROCESS OF CREATING A NEW LIST
     createNewList = () => {
         // FIRST FIGURE OUT WHAT THE NEW LIST'S KEY AND NAME WILL BE
-        let newKey = this.state.sessionData.nextKey;
-        let newName = "Untitled" + newKey;
+        let button = document.getElementById('add-list-button');
+        if(!(button.classList.contains('top5-button-disabled'))){
 
-        // MAKE THE NEW LIST
-        let newList = {
-            key: newKey,
-            name: newName,
-            items: ["?", "?", "?", "?", "?"]
-        };
+            let newKey = this.state.sessionData.nextKey;
+            let newName = "Untitled" + newKey;
 
-        // MAKE THE KEY,NAME OBJECT SO WE CAN KEEP IT IN OUR
-        // SESSION DATA SO IT WILL BE IN OUR LIST OF LISTS
-        let newKeyNamePair = { "key": newKey, "name": newName };
-        let updatedPairs = [...this.state.sessionData.keyNamePairs, newKeyNamePair];
-        this.sortKeyNamePairsByName(updatedPairs);
+            // MAKE THE NEW LIST
+            let newList = {
+                key: newKey,
+                name: newName,
+                items: ["?", "?", "?", "?", "?"]
+            };
 
-        // CHANGE THE APP STATE SO THAT IT THE CURRENT LIST IS
-        // THIS NEW LIST AND UPDATE THE SESSION DATA SO THAT THE
-        // NEXT LIST CAN BE MADE AS WELL. NOTE, THIS setState WILL
-        // FORCE A CALL TO render, BUT THIS UPDATE IS ASYNCHRONOUS,
-        // SO ANY AFTER EFFECTS THAT NEED TO USE THIS UPDATED STATE
-        // SHOULD BE DONE VIA ITS CALLBACK
-        this.setState(prevState => ({
-            currentList: newList,
-            sessionData: {
-                nextKey: prevState.sessionData.nextKey + 1,
-                counter: prevState.sessionData.counter + 1,
-                keyNamePairs: updatedPairs
-            }
-        }), () => {
-            // PUTTING THIS NEW LIST IN PERMANENT STORAGE
-            // IS AN AFTER EFFECT
-            this.db.mutationCreateList(newList);
-        });
+            // MAKE THE KEY,NAME OBJECT SO WE CAN KEEP IT IN OUR
+            // SESSION DATA SO IT WILL BE IN OUR LIST OF LISTS
+            let newKeyNamePair = { "key": newKey, "name": newName };
+            let updatedPairs = [...this.state.sessionData.keyNamePairs, newKeyNamePair];
+            this.sortKeyNamePairsByName(updatedPairs);
+
+            // CHANGE THE APP STATE SO THAT IT THE CURRENT LIST IS
+            // THIS NEW LIST AND UPDATE THE SESSION DATA SO THAT THE
+            // NEXT LIST CAN BE MADE AS WELL. NOTE, THIS setState WILL
+            // FORCE A CALL TO render, BUT THIS UPDATE IS ASYNCHRONOUS,
+            // SO ANY AFTER EFFECTS THAT NEED TO USE THIS UPDATED STATE
+            // SHOULD BE DONE VIA ITS CALLBACK
+            this.setState(prevState => ({
+                currentList: newList,
+                sessionData: {
+                    nextKey: prevState.sessionData.nextKey + 1,
+                    counter: prevState.sessionData.counter + 1,
+                    keyNamePairs: updatedPairs
+                }
+            }), () => {
+                // PUTTING THIS NEW LIST IN PERMANENT STORAGE
+                // IS AN AFTER EFFECT
+                this.db.mutationCreateList(newList);
+            });
+        }
     }
     renameList = (key, newName) => {
         let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
@@ -112,7 +116,10 @@ class App extends React.Component {
             currentList: newCurrentList,
             sessionData: prevState.sessionData
         }), () => {
-            // ANY AFTER EFFECTS?
+            this.enableButton('close-button');
+            this.disableButton('add-list-button');
+            this.disableButton('undo-button');
+            this.disableButton('redo-button');
         });
     }
     updateList = (newList)=>{
@@ -133,6 +140,7 @@ class App extends React.Component {
             sessionData: prevState.sessionData
         }), () => {
             this.db.mutationUpdateList(newList);
+            this.enableButton('undo-button');
         });
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
@@ -140,8 +148,9 @@ class App extends React.Component {
         this.setState({
             currentList:null,
         })
+        this.disableButton('close-button');
+        this.enableButton('add-list-button');
     }
-    
     deleteList = (key) => {
         this.setState({
             toBeDeleted: key,
@@ -155,6 +164,7 @@ class App extends React.Component {
             if (pair.key === this.state.toBeDeleted.key) {
                 //console.log(pair.name);
                 keyNamePair.splice(this.state.toBeDeleted.key,1);//remove the given array from the keyname pairs
+                localStorage.removeItem("top5-list-"+this.state.toBeDeleted.key);
             }
         }
         this.sortKeyNamePairsByName(keyNamePair);
@@ -185,12 +195,23 @@ class App extends React.Component {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
     }
+    enableButton=(id)=>{
+        document.getElementById(id).classList.remove("top5-button-disabled");
+    }
+    disableButton=(id)=>{
+        document.getElementById(id).classList.add("top5-button-disabled");
+    }
+    undo=(event)=>{
+        this.enableButton('redo-button');
+    }
     render() {
         return (
             <div id="app-root">
                 <Banner 
                     title='Top 5 Lister'
-                    closeCallback={this.closeCurrentList} />
+                    closeCallback={this.closeCurrentList} 
+                    undoCallback={this.undo}
+                    />
                 <Sidebar
                     heading='Your Lists'
                     currentList={this.state.currentList}
@@ -204,6 +225,7 @@ class App extends React.Component {
                     currentList={this.state.currentList} 
                     renameItemCallback={this.renameItem}
                     updateList={this.updateList}
+                    enableButtonCallback={this.enableButton}
                 />
                 <Statusbar 
                     currentList={this.state.currentList} 
